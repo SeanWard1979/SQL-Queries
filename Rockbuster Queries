@@ -18,12 +18,12 @@ India	              60
 China	              53
 United States	      36
 Japan	              31
-Mexico	            30
-Brazil	            28
-Russian Federation	28
-Philippines	        20
-Turkey	            15
-Indonesia	          14
+Mexico	              30
+Brazil	              28
+Russian Federation    28
+Philippines	      20
+Turkey	              15
+Indonesia	      14
 
 
 For the next query I attempted to narrow down the top 10 cities in terms of sum within the top 10 countries:  
@@ -42,15 +42,40 @@ GROUP by city, D.country
 ORDER by SUM(amount) DESC
 LIMIT 10
 
-city	              country	      sum
-Cape Coral	        United States	208.58
+city	                country	      sum
+Cape Coral	        United States 208.58
 Santa Brbara dOeste	Brazil	      194.61
-Memphis	            United States	167.67
-Tanza	              Philippines	  166.61
-Valparai	          India	        162.67
-Santa Rosa	        Philippines	  161.68
-Aurora	            United States	159.58
-Tanauan	            Philippines	  156.66
-Halisahar	          India	        154.70
-Bijapur	            India	        154.66
+Memphis	                United States 167.67
+Tanza	                Philippines   166.61
+Valparai	        India	      162.67
+Santa Rosa	        Philippines   161.68
+Aurora	                United States 159.58
+Tanauan	                Philippines   156.66
+Halisahar	        India	      154.70
+Bijapur	                India	      154.66
 
+For this final Query, I showed the top 5 customers within those top 10 cities.  I had to use a number of Inner Joins in order
+to display the data as needed.  
+
+SELECT A. first_name, A. last_name,
+C. city, D. country, A. customer_id,
+       SUM(amount)
+FROM customer A
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C.city_id
+INNER JOIN country D ON C.country_ID = D.country_ID
+INNER JOIN payment E ON A.customer_ID= E.customer_ID
+WHERE country IN ('India', 'China', 'United States',
+				  'Japan', 'Mexico', 'Brazil', 
+				  'Russian Federation', 'Philippines',
+				  'Turkey', 'Indonesia')
+GROUP BY city, country, A. customer_id
+ORDER BY SUM(amount) DESC
+LIMIT 5;
+
+first_name   last_name	city	            country	sum
+Karl	     Seal	Cape Coral	    United States 208.58
+Marion	     Snyder	Santa Brbara dOest  Brazil	  194.61
+Ana	     Bradley	Memphis	            United States 167.67
+Marcia	     Dean	Tanza	            Philippines	  166.61
+Mike	     Way	Valparai	    India	  162.67
